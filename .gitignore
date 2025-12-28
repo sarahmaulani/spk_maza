@@ -1,0 +1,26 @@
+# Python
+*.pyc
+__pycache__/
+*.pyd
+*.egg-info/
+*.eggs/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+.env
+
+# Django-specific files
+*.log
+*.pot
+db.sqlite3
+media/ # Folder untuk file media yang diunggah pengguna (opsional)
+
+# IDE-specific files (e.g., PyCharm, VS Code)
+.idea/
+.vscode/
+
+# Operating System files
+.DS_Store
+Thumbs.db

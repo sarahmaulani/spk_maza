@@ -1,0 +1,20 @@
+<h2>Hasil Perhitungan TOPSIS Lengkap</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Produk</th>
+            <th>Nilai</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in hasil %}
+        <tr>
+            <td>{{ item.rank }}</td>
+            <td>{{ item.produk }}</td>
+            <td>{{ item.nilai }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

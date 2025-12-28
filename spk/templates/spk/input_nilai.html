@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Nilai - SPK Toko Kue Maza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #947aa3);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+           .user-welcome {
+            font-size: 14px;
+        }
+        
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .nav-bar {
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background: #f0f0f0;
+        }
+        
+        .nav-links a.active {
+            background: #a88bb4;
+            color: white;
+        }        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn-primary {
+            background: #947aa3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background: #efe;
+            color: #363;
+            border: 1px solid #cfc;
+        }
+        
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Toko Kue Maza</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-welcome">
+                    Halo, <strong>{{ user.username }}</strong>
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">
+                        ( {{ user_profile.get_role_display }} )
+                    </small>
+                </div>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- navigasi -->
+    <nav class="nav-bar">
+     <div class="nav-content">
+        <div class="nav-links">
+            <a href="{% url 'user_home' %}" >Dashboard</a>
+            <a href="{% url 'hasil_topsis' %}">Hasil Ranking</a>
+            
+            <!-- Hanya tampilkan Input Data untuk admin & staff -->
+            {% if user_profile.can_input_data %}
+            <a href="{% url 'input_nilai' %}"class="active">Input Data</a>
+            {% endif %}
+            
+            <!-- Hanya tampilkan Analytics untuk admin & staff -->
+            {% if user_profile.is_staff_user %}
+            <a href="{% url 'analytics_dashboard' %}">Analisis</a>
+            {% endif %}
+        </div>
+     </div>
+    </nav>
+    
+    <!-- Kont utama -->
+    <div class="container">
+        <!-- Messages -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Form Input -->
+        <div class="card">
+            <h2>Input Data Penjualan & Rating</h2>
+            <br>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="produk">Produk</label>
+                    <select name="produk" id="produk" class="form-control" required>
+                        <option value="">Pilih Produk</option>
+                        {% for produk in produk_list %}
+                            <option value="{{ produk.id }}">{{ produk.nama }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="kriteria">Kriteria</label>
+                    <select name="kriteria" id="kriteria" class="form-control" required>
+                        <option value="">Pilih Kriteria</option>
+                        {% for kriteria in kriteria_user %}
+                            <option value="{{ kriteria.id }}">{{ kriteria.nama }} ({{ kriteria.kode }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nilai">Nilai</label>
+                    <input type="number" name="nilai" id="nilai" class="form-control" step="0.01" min="0" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">Simpan</button>
+            </form>
+        </div>
+        
+        <!-- Data yang sudah diinput -->
+        <div class="card">
+            <h3>Data Tersimpan</h3>
+            
+            {% if nilai_user %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produk</th>
+                        <th>Kriteria</th>
+                        <th>Nilai</th>
+                        <th>Tanggal Input</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nilai in nilai_user %}
+                    <tr>
+                        <td>{{ nilai.produk.nama }}</td>
+                        <td>{{ nilai.kriteria.nama }}</td>
+                        <td>{{ nilai.nilai }}</td>
+                        <td>{{ nilai.created_at|date:"d M Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>Kosong</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Info Kriteria -->
+        <!-- <div class="card">
+            <h3>Note</h3>
+            <p>Kriteria yang dapat diinput:</p>
+            <ul style="margin-top: 10px; color: #666;">
+                {% for kriteria in kriteria_user %}
+                <li><strong>{{ kriteria.kode }}: {{ kriteria.nama }}</strong> - {{ kriteria.deskripsi }}</li>
+                {% empty %}
+                <li>Belum ada kriteria yang bisa diinput user</li>
+                {% endfor %}
+            </ul>
+        </div> -->
+    </div>
+</body>
+</html>

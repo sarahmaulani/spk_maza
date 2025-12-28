@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil TOPSIS - SPK Toko Kue Maza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #947aa3);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+       .logo h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-align: center;
+            color: #f7f0f5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+           .user-welcome {
+            font-size: 14px;
+        }
+        
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .nav-bar {
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background: #f0f0f0;
+        }
+        
+        .nav-links a.active {
+            background: #a88bb4;
+            color: white;
+        }        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .top-1 { background-color: #3a0d55 !important; color: #ddd;}
+        .top-2 { background-color: #5d2f77 !important; color: #ddd;}
+        .top-3 { background-color: #947aa3 !important; color: #ddd;}
+        
+        .kembali {
+            display: inline-block;
+            margin-top: 20px;
+            color: #947aa3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .kembali:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Toko Kue Maza</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-welcome">
+                    Halo, <strong>{{ user.username }}</strong>
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">
+                        ( {{ user_profile.get_role_display }} )
+                    </small>
+                </div>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- navigasi -->
+    <nav class="nav-bar">
+     <div class="nav-content">
+        <div class="nav-links">
+            <a href="{% url 'user_home' %}" >Dashboard</a>
+            <a href="{% url 'hasil_topsis' %}" class="active">Hasil Ranking</a>
+            
+            <!-- Hanya tampilkan Input Data untuk admin & staff -->
+            {% if user_profile.can_input_data %}
+            <a href="{% url 'input_nilai' %}">Input Data</a>
+            {% endif %}
+            
+            <!-- Hanya tampilkan Analytics untuk admin & staff -->
+            {% if user_profile.is_staff_user %}
+            <a href="{% url 'analytics_dashboard' %}">Analisis</a>
+            {% endif %}
+        </div>
+     </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <h2>Hasil Perhitungan</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Produk</th>
+                        <th>Nilai Preferensi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in hasil %}
+                    <tr class="{% if item.rank == 1 %}top-1{% elif item.rank == 2 %}top-2{% elif item.rank == 3 %}top-3{% endif %}">
+                        <td>{{ item.rank }}</td>
+                        <td>{{ item.produk }}</td>
+                        <td>{{ item.nilai|floatformat:4 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #666;">
+                            Tidak ada data hasil perhitungan. Pastikan data produk dan kriteria sudah diinput.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <a href="{% url 'user_home' %}" class="kembali">← Kembali ke Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
