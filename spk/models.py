@@ -13,9 +13,12 @@ class UserProfile(models.Model):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='viewer')
-    phone = models.CharField(max_length=20, blank=True)
-    department = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)  # ← TAMBAH null=True
+    department = models.CharField(max_length=100, blank=True, null=True)  # ← Juga ini
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Juga untuk alamat jika ada:
+    alamat = models.CharField(max_length=255, blank=True, null=True)
     
     #mo nampilin username sama roleny
     def __str__(self):
